@@ -46,14 +46,15 @@ service.interceptors.response.use(
       return Promise.reject(new Error(message))
     }
   },
-  // 注意：这里的错误处理和上面是不一样的，上面的error处理指的是响应拦截器的处理
-  // 而下面这里指的是响应拦截器处理成功后，得到的信息success是否为false，对false的处理
+  // 注意：这里的错误处理和上面是不一样的，上面这里else后面代码是响应拦截器响应成功后，得到的信息success是否为false，对false的处理
+  // 而下面的error处理指的是响应拦截器响应错误的处理
   // 但是处理方法是相同的
   error => {
     // error信息里面response的对象
     if (error.response && error.response.data && error.response.data.code === 10002) {
-      // 当等于10002的时候 表示 后端告诉我token超时了
-      store.dispatch('user/logout') // 登出action 删除token
+      // 当等于10002的时候,表示后端告诉我token超时了
+      // 则登出action并删除token
+      store.dispatch('user/logout') 
       router.push('/login')
     } else {
       // 提示错误信息，注意，这里的提示仅是在界面上提示，但是处理需要加下面的语句

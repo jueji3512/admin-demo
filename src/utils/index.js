@@ -1,13 +1,4 @@
-/**
- * Created by PanJiaChen on 16/11/18.
- */
 
-/**
- * Parse the time to string
- * @param {(Object|string|number)} time
- * @param {string} cFormat
- * @returns {string | null}
- */
 export function parseTime(time, cFormat) {
   if (arguments.length === 0 || !time) {
     return null
@@ -51,11 +42,6 @@ export function parseTime(time, cFormat) {
   return time_str
 }
 
-/**
- * @param {number} time
- * @param {string} option
- * @returns {string}
- */
 export function formatTime(time, option) {
   if (('' + time).length === 10) {
     time = parseInt(time) * 1000
@@ -94,10 +80,6 @@ export function formatTime(time, option) {
   }
 }
 
-/**
- * @param {string} url
- * @returns {Object}
- */
 export function param2Obj(url) {
   const search = decodeURIComponent(url.split('?')[1]).replace(/\+/g, ' ')
   if (!search) {
@@ -114,4 +96,21 @@ export function param2Obj(url) {
     }
   })
   return obj
+}
+
+// 利用递归算法,将列表型数据转化为树型数据
+export function tranListToTreeData(list, rootValue) {
+  var arr = []
+  list.forEach(item => {
+    // 找到之后,就去找item下面有没有子节点
+    if (item.pid === rootValue) {
+      const children = tranListToTreeData(list, item.id)
+      // 如果children的长度大于0,则说明找到了子节点
+      if (children.length) {
+        item.children = children
+      }
+      arr.push(item) // 将内容加入到数组中
+    }
+  })
+  return arr
 }
