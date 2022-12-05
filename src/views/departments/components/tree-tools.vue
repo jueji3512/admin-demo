@@ -54,8 +54,11 @@ export default {
     operateDepts(type) {
       if (type === 'add') {
         // 添加子部门操作
+        // 需要当前结点信息的原因是，是设置当前部门的子部门
+        this.$emit('addDepts', this.treeNode)
       } else if (type === 'edit') {
         // 编辑操作
+        this.$emit('editDepts', this.treeNode)
       } else {
         // 删除操作
         this.$confirm('确定要删除该部门吗').then(() => {
