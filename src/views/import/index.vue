@@ -1,0 +1,63 @@
+<template>
+  <!-- 导入UploadExcel组件 -->
+  <upload-excel :on-success="success" />
+</template>
+
+<script>
+import { importEmployee } from "@/api/employees";
+export default {
+  methods: {
+    async success({ header, results }) {
+      const userRelations = {
+        '入职日期': "timeOfEntry",
+        '手机号': "mobile",
+        '姓名': "username",
+        '转正日期': "correctionTime",
+        '工号': "workNumber",
+      };
+      const arr = [];
+      results.forEach((item) => {
+        // 将每一个条数据的中文都换成英文
+        const userInfo = {};
+        Object.keys(item).forEach((key) => {
+          // key是当前的中文名 找到对应的英文名
+          if (
+            userRelations[key] === "timeOfEntry" ||
+            userRelations[key] === "correctionTime"
+          ) {
+            // 如此处理后才能入库
+            userInfo[userRelations[key]] = new Date(
+              this.formatDate(item[key], "/")
+            ); 
+            return;
+          }
+          userInfo[userRelations[key]] = item[key];
+        });
+        // 最终userInfo变成了全是英文
+        arr.push(userInfo);
+      });
+      await importEmployee(arr);
+      this.$message.success("导入成功");
+      this.$router.back(); // 回到上一页
+    },
+    formatDate(numb, format) {
+      const time = new Date((numb - 1) * 24 * 3600000 + 1);
+      time.setYear(time.getFullYear() - 70);
+      const year = time.getFullYear() + "";
+      const month = time.getMonth() + 1 + "";
+      const date = time.getDate() + "";
+      if (format && format.length === 1) {
+        return year + format + month + format + date;
+      }
+      return (
+        year +
+        (month < 10 ? "0" + month : month) +
+        (date < 10 ? "0" + date : date)
+      );
+    },
+  },
+};
+</script>
+
+<style>
+</style>

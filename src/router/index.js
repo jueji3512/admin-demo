@@ -37,6 +37,17 @@ export const constantRoutes = [
       meta: { title: '首页', icon: 'dashboard' }
     }]
   },
+
+  {
+    path: '/import',
+    component: Layout,
+    // 隐藏在左侧菜单中
+    hidden: true, 
+    children: [{
+      path: '',
+      component: () => import('@/views/import')
+    }]
+  },
   
   { path: '*', redirect: '/404', hidden: true }
 ]
