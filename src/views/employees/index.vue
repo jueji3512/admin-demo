@@ -4,9 +4,18 @@
       <page-tools :show-before="true">
         <span slot="before">共166条记录</span>
         <template #after>
-          <el-button size="small" type="warning" @click="$router.push('/import')">excel导入</el-button>
-          <el-button size="small" type="danger" @click="exportData">excel导出</el-button>
-          <el-button size="small" type="primary" @click="showDialog = true">新增员工</el-button>
+          <el-button
+            size="small"
+            type="warning"
+            @click="$router.push('/import')"
+            >excel导入</el-button
+          >
+          <el-button size="small" type="danger" @click="exportData"
+            >excel导出</el-button
+          >
+          <el-button size="small" type="primary" @click="showDialog = true"
+            >新增员工</el-button
+          >
         </template>
       </page-tools>
       <!-- 放置表格和分页 -->
@@ -45,7 +54,12 @@
             align="center"
           >
             <template slot-scope="{ row }">
-              <el-button type="text" size="small">查看</el-button>
+              <el-button
+                type="text"
+                size="small"
+                @click="$router.push(`/employees/detail/${row.id}`)"
+                >查看</el-button
+              >
               <el-button type="text" size="small">转正</el-button>
               <el-button type="text" size="small">调岗</el-button>
               <el-button type="text" size="small">离职</el-button>
@@ -85,7 +99,7 @@
 import { delEmployee, getEmployeeList } from "@/api/employees";
 import EmployeeEnum from "@/api/constant/employees";
 import addEmployee from "./components/add-employee.vue";
-import { formatDate } from '@/filters'
+import { formatDate } from "@/filters";
 export default {
   components: { addEmployee },
   data() {
@@ -132,44 +146,52 @@ export default {
     },
     exportData() {
       const headers = {
-        '姓名': 'username',
-        '手机号': 'mobile',
-        '入职日期': 'timeOfEntry',
-        '聘用形式': 'formOfEmployment',
-        '转正日期': 'correctionTime',
-        '工号': 'workNumber',
-        '部门': 'departmentName'
-      }
+        姓名: "username",
+        手机号: "mobile",
+        入职日期: "timeOfEntry",
+        聘用形式: "formOfEmployment",
+        转正日期: "correctionTime",
+        工号: "workNumber",
+        部门: "departmentName",
+      };
       // 懒加载，即调用此方法时才加载
-      import('@/vendor/Export2Excel').then(async excel => {
-        const { rows } = await getEmployeeList({ page: 1, size: this.page.total })
-        const data = this.formatJson(headers, rows)
+      import("@/vendor/Export2Excel").then(async (excel) => {
+        const { rows } = await getEmployeeList({
+          page: 1,
+          size: this.page.total,
+        });
+        const data = this.formatJson(headers, rows);
         excel.export_json_to_excel({
           header: Object.keys(headers),
           data,
-          filename: '员工信息表',
+          filename: "员工信息表",
           autoWidth: true,
-          bookType: 'xlsx'
-        })
-      })
+          bookType: "xlsx",
+        });
+      });
     },
     // 对表格数据的处理
     formatJson(headers, rows) {
-      return rows.map(item => {
-        return Object.keys(headers).map(key => {
+      return rows.map((item) => {
+        return Object.keys(headers).map((key) => {
           // 对时间格式的处理
-          if(headers[key] === 'timeOfEntry' || headers[key] === 'correctionTime') {
-            return formatDate(item[headers[key]])
-          } 
-          // 对聘用形式的处理
-          else if(headers[key] === 'formOfEmployment') {
-            const obj = EmployeeEnum.hireType.find(num => num.id === item[headers[key]])
-            return obj ? obj.value : '未知' 
+          if (
+            headers[key] === "timeOfEntry" ||
+            headers[key] === "correctionTime"
+          ) {
+            return formatDate(item[headers[key]]);
           }
-          return item[headers[key]]
-        })
-      })
-    }
+          // 对聘用形式的处理
+          else if (headers[key] === "formOfEmployment") {
+            const obj = EmployeeEnum.hireType.find(
+              (num) => num.id === item[headers[key]]
+            );
+            return obj ? obj.value : "未知";
+          }
+          return item[headers[key]];
+        });
+      });
+    },
   },
 };
 </script>
