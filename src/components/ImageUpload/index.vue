@@ -44,8 +44,8 @@ el-upload有一个file-list属性，即上传的文件列表，我们设置了�
 
 import COS from "cos-js-sdk-v5";
 const cos = new COS({
-  SecretId: "AKID0oPK9k7nY9j6D5i5CJEtCHCuQhnvue8P",
-  SecretKey: "8NQGrhHchY8gFYbPxJTR9bmtvoSr1xfL",
+  SecretId: "",
+  SecretKey: "",
 });
 export default {
   data() {
