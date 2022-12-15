@@ -1,14 +1,11 @@
 <template>
   <div class="dashboard-container">
     <div class="dashboard-text">name: {{ name }}</div>
-    <demo></demo>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-// demo
-import demo from '@/components/ImageUpload'
 export default {
   name: 'Dashboard',
   computed: {
@@ -16,9 +13,6 @@ export default {
       'name'
     ])
   },
-  components: {
-    demo
-  }
 }
 </script>
 

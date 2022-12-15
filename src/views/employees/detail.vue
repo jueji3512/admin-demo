@@ -28,9 +28,23 @@
             </el-form>
           </el-tab-pane>
           <el-tab-pane label="个人详情">
+            <el-row type="flex" justify="end">
+              <el-tooltip content="打印个人基本信息">
+                <router-link :to="`/employees/print/${userId}?type=personal`">
+                  <i class="el-icon-printer" />
+                </router-link>
+              </el-tooltip>
+            </el-row>
             <component :is="UserComponent" />
           </el-tab-pane>
           <el-tab-pane label="岗位信息">
+            <el-row type="flex" justify="end">
+              <el-tooltip content="打印岗位信息">
+                <router-link :to="`/employees/print/${userId}?type=job`">
+                  <i class="el-icon-printer" />
+                </router-link>
+              </el-tooltip>
+            </el-row>
             <component :is="JobComponent" />
           </el-tab-pane>
         </el-tabs>
@@ -40,14 +54,14 @@
 </template>
 
 <script>
-import { getUserDetailById } from "@/api/user"
-import { saveUserDetailById } from "@/api/employees"
-import UserInfo from './components/user-info.vue'
-import JobInfo from './components/job-info.vue'
+import { getUserDetailById } from "@/api/user";
+import { saveUserDetailById } from "@/api/employees";
+import UserInfo from "./components/user-info.vue";
+import JobInfo from "./components/job-info.vue";
 export default {
   components: {
     UserInfo,
-    JobInfo
+    JobInfo,
   },
   data() {
     return {

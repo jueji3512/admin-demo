@@ -58,6 +58,7 @@
         <el-col :span="12">
           <el-form-item label="员工头像">
             <!-- 放置上传图片 -->
+            <image-upload ref="staffPhoto" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -91,6 +92,7 @@
 
         <el-form-item label="员工照片">
           <!-- 放置上传图片 -->
+          <image-upload ref="myStaffPhoto" />
         </el-form-item>
         <el-form-item label="国家/地区">
           <el-select v-model="formData.nationalArea" class="inputW2">
@@ -387,9 +389,13 @@
 </template>
 
 <script>
-import EmployeeEnum from "@/api/constant/employees"
-import { getPersonalDetail, updatePersonal, saveUserDetailById } from '@/api/employees'
-import { getUserDetailById } from '@/api/user'
+import EmployeeEnum from "@/api/constant/employees";
+import {
+  getPersonalDetail,
+  updatePersonal,
+  saveUserDetailById,
+} from "@/api/employees";
+import { getUserDetailById } from "@/api/user";
 export default {
   data() {
     return {
@@ -462,27 +468,51 @@ export default {
     };
   },
   created() {
-    this.getPersonalDetail()
-    this.getUserDetailById()
+    this.getPersonalDetail();
+    this.getUserDetailById();
   },
   methods: {
     async getUserDetailById() {
-      this.userInfo = await getUserDetailById(this.userId)
-    },
-    async saveUser() {
-    //  调用父组件
-      await saveUserDetailById(this.userInfo)
-      this.$message.success('保存成功')
+      this.userInfo = await getUserDetailById(this.userId);
+      if (this.userInfo.staffPhoto) {
+        this.$refs.myStaffPhoto.fileList = [
+          { url: this.userInfo.staffPhoto, upload: true },
+        ];
+      }
     },
     async getPersonalDetail() {
-      this.formData = await getPersonalDetail(this.userId) // 获取员工数据
+      this.formData = await getPersonalDetail(this.userId); // 获取员工数据
+      if (this.formData.staffPhoto) {
+        this.$refs.myStaffPhoto.fileList = [
+          { url: this.formData.staffPhoto, upload: true },
+        ];
+      }
+    },
+    async saveUser() {
+      // 读取员工上传的头像
+      const fileList = this.$refs.staffPhoto.fileList; // 读取上传组件的数据
+      if (fileList.some((item) => !item.upload)) {
+        // 此时去找upload为false的图片，找到了说明有图片还没有上传完成
+        this.$message.warning("您当前还有图片没有上传完成！");
+        return;
+      }
+      await saveUserDetailById({
+        ...this.userInfo,
+        staffPhoto: fileList && fileList.length ? fileList[0].url : " ",
+      });
+      this.$message.success("保存成功");
     },
     async savePersonal() {
-      await updatePersonal(this.formData)
-      this.$message.success('保存成功')
-    }
-    
-  }
+      const fileList = this.$refs.myStaffPhoto.fileList
+      if (fileList.some(item => !item.upload)) {
+        // 此时去找upload为false的图片，若找到了说明有图片还没有上传完成
+        this.$message.warning('您当前还有图片没有上传完成！')
+        return
+      }
+      await updatePersonal({ ...this.formData, staffPhoto: fileList && fileList.length ? fileList[0].url : ' ' })
+      this.$message.success('保存基础信息成功')
+    },
+  },
 };
 </script>
 

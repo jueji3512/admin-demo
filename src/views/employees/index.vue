@@ -23,6 +23,22 @@
         <el-table border :data="list">
           <el-table-column label="序号" sortable="" type="index" />
           <el-table-column label="姓名" sortable="" prop="username" />
+          <el-table-column label="头像" align="center">
+            <template slot-scope="{ row }">
+              <img
+                v-imagerror="require('@/assets/common/head.jpg')"
+                :src="row.staffPhoto"
+                style="
+                  border-radius: 50%;
+                  width: 100px;
+                  height: 100px;
+                  padding: 10px;
+                "
+                alt=""
+                @click="showQrCode(row.staffPhoto)"
+              />
+            </template>
+          </el-table-column>
           <el-table-column label="工号" sortable="" prop="workNumber" />
           <el-table-column
             label="聘用形式"
@@ -92,6 +108,11 @@
       </el-card>
     </div>
     <add-employee :showDialog.sync="showDialog" />
+    <el-dialog title="二维码" :visible.sync="showCodeDialog">
+      <el-row type="flex" justify="center">
+        <canvas ref="myCanvas" />
+      </el-row>
+    </el-dialog>
   </div>
 </template>
 
@@ -100,6 +121,7 @@ import { delEmployee, getEmployeeList } from "@/api/employees";
 import EmployeeEnum from "@/api/constant/employees";
 import addEmployee from "./components/add-employee.vue";
 import { formatDate } from "@/filters";
+import QrCode from 'qrcode'
 export default {
   components: { addEmployee },
   data() {
@@ -113,6 +135,7 @@ export default {
         total: 0,
       },
       showDialog: false,
+      showCodeDialog: false
     };
   },
   created() {
@@ -192,6 +215,18 @@ export default {
         });
       });
     },
+    showQrCode(url) {
+      if(url) {
+        this.showCodeDialog = true
+        this.$nextTick(() => {
+          // 这里因为异步的原因，如果不用nextTick，则会导致弹窗没有立刻出现，故我需要设置nextTick
+          // 即数据下一次更新（弹层出现后），再将地址转化为二维码
+          QrCode.toCanvas(this.$refs.myCanvas, url)
+        })
+      } else {
+        this.$message.warning('该用户还未上传图像')
+      }
+    }
   },
 };
 </script>
