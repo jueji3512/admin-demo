@@ -79,7 +79,7 @@
               <el-button type="text" size="small">转正</el-button>
               <el-button type="text" size="small">调岗</el-button>
               <el-button type="text" size="small">离职</el-button>
-              <el-button type="text" size="small">角色</el-button>
+              <el-button type="text" size="small" @click="editRole(row.id)">角色</el-button>
               <el-button
                 type="text"
                 size="small"
@@ -113,6 +113,7 @@
         <canvas ref="myCanvas" />
       </el-row>
     </el-dialog>
+    <assign-role ref="assignRole" :showRoleDialog.sync="showRoleDialog" :userId="userId" />
   </div>
 </template>
 
@@ -122,8 +123,9 @@ import EmployeeEnum from "@/api/constant/employees";
 import addEmployee from "./components/add-employee.vue";
 import { formatDate } from "@/filters";
 import QrCode from 'qrcode'
+import AssignRole from './components/assign-role.vue';
 export default {
-  components: { addEmployee },
+  components: { addEmployee, AssignRole },
   data() {
     return {
       // 接收数据的列表
@@ -135,7 +137,9 @@ export default {
         total: 0,
       },
       showDialog: false,
-      showCodeDialog: false
+      showCodeDialog: false,
+      showRoleDialog: false,
+      userId: null
     };
   },
   created() {
@@ -215,6 +219,7 @@ export default {
         });
       });
     },
+    // 显示二维码
     showQrCode(url) {
       if(url) {
         this.showCodeDialog = true
@@ -226,6 +231,13 @@ export default {
       } else {
         this.$message.warning('该用户还未上传图像')
       }
+    },
+    // 编辑角色
+    async editRole(id) {
+      this.userId = id
+      // 在弹层出来之前就必须得到选定员工的角色信息
+      await this.$refs.assignRole.getUserDetailById(id)
+      this.showRoleDialog = true
     }
   },
 };
