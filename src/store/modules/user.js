@@ -1,6 +1,7 @@
 import { getToken, setToken, removeToken } from "@/utils/auth"
 import { getUserInfo, login, getUserDetailById } from "@/api/user"
 import { setTimeStamp } from '@/utils/auth' 
+import { resetRouter } from "@/router"
 
 // state状态
 const state = {
@@ -60,6 +61,12 @@ const actions = {
     // 删除token和用户信息
     context.commit('removeToken')
     context.commit('removeUserInfo')
+    // 重置路由
+    resetRouter()
+    // 同级模块无法直接调用加了命名空间的另一个模块的actions等，故这里要做以下操作
+    // 子模块调用子模块的action可以将commit的第三个参数设置成{ root: true }
+    // 就表示当前的context不是子模块了，而是父模块
+    context.commit('permission/setRoutes', [], { root: true })
   },
 }
 

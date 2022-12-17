@@ -147,7 +147,7 @@ export default {
         .then(() => {
           if (this.formData.id) {
             // 修改权限
-            return updatePermission(this.formDate);
+            return updatePermission(this.formData);
           } else {
             return addPermission(this.formData);
           }

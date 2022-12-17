@@ -11,6 +11,7 @@ import settingRouter from './modules/setting'
 import socialRouter from './modules/social'
 Vue.use(Router)
 import Layout from '@/layout'
+import userRouter from './modules/user'
 
 // 静态路由
 export const constantRoutes = [
@@ -48,8 +49,8 @@ export const constantRoutes = [
       component: () => import('@/views/import')
     }]
   },
-  
-  { path: '*', redirect: '/404', hidden: true }
+
+  userRouter
 ]
 
 // 动态路由
@@ -66,12 +67,12 @@ export const asyncRoutes = [
 
 const createRouter = () => new Router({
   scrollBehavior: () => ({ y: 0 }),
-  routes: [...constantRoutes, ...asyncRoutes]
+  routes: [...constantRoutes]
 })
 
 // 实例化路由
 const router = createRouter()
-
+// 重置路由
 export function resetRouter() {
   const newRouter = createRouter()
   router.matcher = newRouter.matcher 

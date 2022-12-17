@@ -15,6 +15,9 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
 
+import checkPermission from '@/mixin/checkPermission'
+Vue.mixin(checkPermission)
+
 // 注册过滤器
 import * as filters from '@/filters'
 Object.keys(filters).forEach(key => {
