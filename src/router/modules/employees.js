@@ -12,6 +12,7 @@ export default {
       path: '',
       component: () => import('@/views/employees'),
       // 路由元信息  其实就是存储数据的对象 我们可以在这里放置一些信息
+      name: 'employees',
       meta: {
         // meta属性的里面的属性随意定义，这里用title的原因是
         // 因为左侧导航会读取我们的路由里的meta里面的title作为显示菜单名称

@@ -61,6 +61,8 @@ const actions = {
     // 删除token和用户信息
     context.commit('removeToken')
     context.commit('removeUserInfo')
+    // 重置多页签
+    context.dispatch('tagsView/delAllViews', null, { root: true })
     // 重置路由
     resetRouter()
     // 同级模块无法直接调用加了命名空间的另一个模块的actions等，故这里要做以下操作

@@ -68,6 +68,7 @@ export function suspend(params) {
   })
 }
 export function startProcess(data) {
+  console.log(data)
   return request({
     url: `/user/process/startProcess`,
     data,
